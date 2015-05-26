@@ -16,6 +16,24 @@ import (
 // any error encountered.  By default, this function will run using exponential
 // backoff -- if this function fails for any reason, the request will be retried
 // up to 3 times.
+//
+// Usage:
+//
+//		package main
+//
+//		import (
+//			"fmt"
+//			"github.com/rdegges/go-ipify"
+//		)
+//
+//		func main() {
+//			err, ip := ipify.GetIp()
+//			if err != nil {
+//				fmt.Println("Couldn't get my IP address:", err)
+//			} else {
+//				fmt.Println("My IP address is:", ip)
+//			}
+//		}
 func GetIp() (string, error) {
 	b := &backoff.Backoff{
 		Jitter: true,
