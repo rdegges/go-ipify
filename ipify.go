@@ -1,3 +1,5 @@
+// Package ipify provides a single function for retrieving your computer's
+// public IP address from the ipify service: http://www.ipify.org
 package ipify
 
 import (
