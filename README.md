@@ -31,7 +31,7 @@ This library also has some other nice features you might care about:
 
 - If a request fails for any reason, it is re-attempted 3 times using an
   exponential backoff algorithm for maximum effectiveness.
-- This library handles exceptions properly, and usage examples below show you
+- This library handles errors properly, and usage examples below show you
   how to deal with errors in a foolproof way.
 - This library only makes API requests over HTTPS.
 
@@ -41,7 +41,7 @@ This library also has some other nice features you might care about:
 To install `ipify`, simply run:
 
 ```console
-$ pip install ipify
+$ go get github.com/rdegges/go-ipify
 ```
 
 This will install the latest version of the library automatically.
@@ -51,67 +51,45 @@ This will install the latest version of the library automatically.
 
 Using this library is very simple.  Here's a simple example:
 
-```python
->>> from ipify import get_ip
->>> ip = get_ip()
->>> ip
-u'96.41.136.144'
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/rdegges/go-ipify"
+)
+
+func main() {
+    ip, err := ipify.GetIp()
+    if err != nil {
+        fmt.Println("Couldn't get my IP address:", err)
+    } else {
+        fmt.Println("My IP address is:", ip)
+    }
+}
 ```
 
-Now, in regards to exception handling, there are several ways this can fail:
+Now, in regards to error handling, there are several ways this can fail:
 
 - The ipify service is down (*not likely*), or:
 - Your machine is unable to get the request to ipify because of a network error
-  of some sort (DNS, no internet, etc.).
+  of some sort (*DNS, no internet, etc.*).
 
-Here's how you can handle all of these edge cases:
+The library will output an informative error message in the event anything
+fails.
 
-```python
-from ipify import get_ip
-from ipify.exceptions import ConnectionError, ServiceError
-
-try:
-    ip = get_ip()
-except ConnectionError:
-    # If you get here, it means you were unable to reach the ipify service,
-    # most likely because of a network error on your end.
-except ServiceError:
-    # If you get here, it means ipify is having issues, so the request
-    # couldn't be completed :(
-except:
-    # Something else happened (non-ipify related). Maybe you hit CTRL-C
-    # while the program was running, the kernel is killing your process, or
-    # something else all together.
-```
-
-If you want to simplify the above error handling, you could also do the
-following (*it will catch any sort of ipify related errors regardless of what
-type they may be*):
-
-```python
-from ipify import get_ip
-from ipify.exceptions import IpifyException
-
-try:
-    ip = get_ip()
-except IpifyException:
-    # If you get here, then some ipify exception occurred.
-except:
-    # If you get here, some non-ipify related exception occurred.
-```
-
-One thing to keep in mind: regardless of how you decide to handle exceptions,
-the ipify library will retry any failed requests 3 times before ever raising
-exceptions -- so if you *do* need to handle exceptions, just remember that retry
-logic has already been attempted.
+One thing to keep in mind: regardless of how you decide to handle errors, the
+ipify library will retry any failed requests 3 times before ever failing -- so
+if you *do* need to handle errors, just remember that retry logic has already
+been attempted.
 
 
 ## Contributing
 
 This project is only possible due to the amazing contributors who work on it!
 
-If you'd like to improve this library, please send me a pull request! I'm happy
-to review and merge pull requests.
+If you'd like to improve this library, please send me a pull request!  I'm
+happy to review and merge pull requests.
 
 The standard contribution workflow should look something like this:
 
@@ -123,13 +101,8 @@ The standard contribution workflow should look something like this:
 Also, if you're making changes, please write tests for your changes -- this
 project has a full test suite you can easily modify / test.
 
-To run the test suite, you can use the following commands:
-
-```console
-$ pip install -e .
-$ pip install -r requirements.txt
-$ python setup.py test
-```
+To run the test suite, you can use the `go test` command after forking this
+repository.
 
 
   [ipify]: http://www.ipify.org/ "ipify - A Simple IP Address API"
