@@ -12,7 +12,10 @@ import (
 )
 
 // GetIp queries the ipify service (http://www.ipify.org) to retrieve this
-// machine's public IP address.
+// machine's public IP address.  Returns your public IP address as a string, and
+// any error encountered.  By default, this function will run using exponential
+// backoff -- if this function fails for any reason, the request will be retried
+// up to 3 times.
 func GetIp() (string, error) {
 	b := &backoff.Backoff{
 		Jitter: true,
