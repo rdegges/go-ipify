@@ -3,11 +3,8 @@
 The official client library for [ipify][]: *A Simple IP Address API*.
 
 [![GitHub License](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://raw.githubusercontent.com/rdegges/go-ipify/master/UNLICENSE)
-
 [![GitHub Stars](https://img.shields.io/github/stars/rdegges/go-ipify.svg)](https://github.com/rdegges/go-ipify/stargazers)
-
 [![GoDoc](https://godoc.org/github.com/rdegges/go-ipify?status.svg)](https://godoc.org/github.com/rdegges/go-ipify)
-
 [![Build Status](https://travis-ci.org/rdegges/go-ipify.svg?branch=master)](https://travis-ci.org/rdegges/go-ipify)
 
 
