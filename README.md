@@ -1,27 +1,17 @@
-go-ipify
-========
+# go-ipify
 
-The official client library for [ipify][] <http://www.ipify.org/>`_: *A Simple IP
-Address API*.
+The official client library for [ipify][]: *A Simple IP Address API*.
 
-.. image:: https://img.shields.io/pypi/v/ipify.svg
-    :alt: python-ipify Release
-    :target: https://pypi.python.org/pypi/ipify
+[![GitHub License](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://raw.githubusercontent.com/rdegges/go-ipify/master/UNLICENSE)
 
-.. image:: https://img.shields.io/pypi/dm/ipify.svg
-    :alt: python-ipify Downloads
-    :target: https://pypi.python.org/pypi/ipify
+[![GitHub Stars](https://img.shields.io/github/stars/rdegges/go-ipify.svg)](https://github.com/rdegges/go-ipify/stargazers)
 
-.. image:: https://img.shields.io/travis/rdegges/python-ipify.svg
-    :alt: python-ipify Build
-    :target: https://travis-ci.org/rdegges/python-ipify
+[![GoDoc](https://godoc.org/github.com/rdegges/go-ipify?status.svg)](https://godoc.org/github.com/rdegges/go-ipify)
 
-.. image:: https://coveralls.io/repos/rdegges/python-ipify/badge.svg?branch=master
-    :target: https://coveralls.io/r/rdegges/python-ipify?branch=master
+[![Build Status](https://travis-ci.org/rdegges/go-ipify.svg?branch=master)](https://travis-ci.org/rdegges/go-ipify)
 
 
-Meta
-----
+## Meta
 
 - Author: Randall Degges
 - Email: r@rdegges.com
@@ -29,11 +19,10 @@ Meta
 - Status: maintained, active
 
 
-Purpose
--------
+## Purpose
 
-`ipify <http://www.ipify.org/>`_ is the best IP address lookup service on the
-internet.  It's fast, simple, scalable, open source, and well-funded (*by me!*).
+[ipify][] is the best IP address lookup service on the internet.  It's fast,
+simple, scalable, open source, and well-funded (*by me!*).
 
 In short: if you need a way to pragmatically get your public IP address, ipify
 is the best possible choice!
@@ -50,29 +39,27 @@ This library also has some other nice features you might care about:
 - This library only makes API requests over HTTPS.
 
 
-Installation
-------------
+## Installation
 
-To install ``ipify``, simply run:
+To install `ipify`, simply run:
 
-.. code-block:: console
-
-    $ pip install ipify
+```console
+$ pip install ipify
+```
 
 This will install the latest version of the library automatically.
 
 
-Usage
------
+## Usage
 
 Using this library is very simple.  Here's a simple example:
 
-.. code-block:: python
-
-    >>> from ipify import get_ip
-    >>> ip = get_ip()
-    >>> ip
-    u'96.41.136.144'
+```python
+>>> from ipify import get_ip
+>>> ip = get_ip()
+>>> ip
+u'96.41.136.144'
+```
 
 Now, in regards to exception handling, there are several ways this can fail:
 
@@ -82,39 +69,39 @@ Now, in regards to exception handling, there are several ways this can fail:
 
 Here's how you can handle all of these edge cases:
 
-.. code-block:: python
+```python
+from ipify import get_ip
+from ipify.exceptions import ConnectionError, ServiceError
 
-    from ipify import get_ip
-    from ipify.exceptions import ConnectionError, ServiceError
-
-    try:
-        ip = get_ip()
-    except ConnectionError:
-        # If you get here, it means you were unable to reach the ipify service,
-        # most likely because of a network error on your end.
-    except ServiceError:
-        # If you get here, it means ipify is having issues, so the request
-        # couldn't be completed :(
-    except:
-        # Something else happened (non-ipify related). Maybe you hit CTRL-C
-        # while the program was running, the kernel is killing your process, or
-        # something else all together.
+try:
+    ip = get_ip()
+except ConnectionError:
+    # If you get here, it means you were unable to reach the ipify service,
+    # most likely because of a network error on your end.
+except ServiceError:
+    # If you get here, it means ipify is having issues, so the request
+    # couldn't be completed :(
+except:
+    # Something else happened (non-ipify related). Maybe you hit CTRL-C
+    # while the program was running, the kernel is killing your process, or
+    # something else all together.
+```
 
 If you want to simplify the above error handling, you could also do the
 following (*it will catch any sort of ipify related errors regardless of what
 type they may be*):
 
-.. code-block:: python
+```python
+from ipify import get_ip
+from ipify.exceptions import IpifyException
 
-    from ipify import get_ip
-    from ipify.exceptions import IpifyException
-
-    try:
-        ip = get_ip()
-    except IpifyException:
-        # If you get here, then some ipify exception occurred.
-    except:
-        # If you get here, some non-ipify related exception occurred.
+try:
+    ip = get_ip()
+except IpifyException:
+    # If you get here, then some ipify exception occurred.
+except:
+    # If you get here, some non-ipify related exception occurred.
+```
 
 One thing to keep in mind: regardless of how you decide to handle exceptions,
 the ipify library will retry any failed requests 3 times before ever raising
@@ -122,8 +109,7 @@ exceptions -- so if you *do* need to handle exceptions, just remember that retry
 logic has already been attempted.
 
 
-Contributing
-------------
+## Contributing
 
 This project is only possible due to the amazing contributors who work on it!
 
@@ -142,37 +128,11 @@ project has a full test suite you can easily modify / test.
 
 To run the test suite, you can use the following commands:
 
-.. code-block:: console
-
-    $ pip install -e .
-    $ pip install -r requirements.txt
-    $ python setup.py test
-
-
-Change Log
-----------
-
-All library changes, in descending order.
+```console
+$ pip install -e .
+$ pip install -r requirements.txt
+$ python setup.py test
+```
 
 
-Version 1.0.1
-*************
-
-**Not yet released.**
-
-- Fixing typo in the README.  Thanks `@prologic <https://github.com/prologic>`_
-  for the find!
-- Adding a working test for exercising ``ServiceError`` exceptions.  Improves
-  test coverage a bit =)
-- Removing unnecessary assertions / tests.
-- Adding test to improve test coverage to 100% =)
-- Fixing minor style issues.  I'm really obsessed with code style / quality,
-  don't judge me!
-
-
-Version 1.0.0
-*************
-
-**Released May 6, 2015.**
-
-- First release!
+  [ipify]: http://www.ipify.org/ "ipify - A Simple IP Address API"
