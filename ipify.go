@@ -27,7 +27,7 @@ import (
 //		)
 //
 //		func main() {
-//			err, ip := ipify.GetIp()
+//			ip, err := ipify.GetIp()
 //			if err != nil {
 //				fmt.Println("Couldn't get my IP address:", err)
 //			} else {
