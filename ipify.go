@@ -4,11 +4,12 @@ package ipify
 
 import (
 	"errors"
-	"github.com/jpillora/backoff"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/jpillora/backoff"
 )
 
 // GetIp queries the ipify service (http://www.ipify.org) to retrieve this
@@ -42,7 +43,7 @@ func GetIp() (string, error) {
 
 	req, err := http.NewRequest("GET", API_URI, nil)
 	if err != nil {
-		return "", errors.New("Received an invalid status code from ipify: 500. The service might be experiencing issues.")
+		return "", err
 	}
 
 	req.Header.Add("User-Agent", USER_AGENT)
@@ -57,16 +58,17 @@ func GetIp() (string, error) {
 
 		defer resp.Body.Close()
 
-		ip, err := ioutil.ReadAll(resp.Body)
+		out, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return "", errors.New("Received an invalid status code from ipify: 500. The service might be experiencing issues.")
+			return "", err
 		}
 
 		if resp.StatusCode != 200 {
-			return "", errors.New("Received an invalid status code from ipify: " + strconv.Itoa(resp.StatusCode) + ". The service might be experiencing issues.")
+			return "", errors.New("Received an invalid status code from ipify: " + strconv.Itoa(resp.StatusCode) + ". Body: " + string(out))
 		}
 
-		return string(ip), nil
+		ip := string(out)
+		return ip, nil
 	}
 
 	return "", errors.New("The request failed because it wasn't able to reach the ipify service. This is most likely due to a networking error of some sort.")
