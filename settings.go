@@ -7,7 +7,7 @@ import (
 )
 
 // The version of this library.
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 
 // The maximum amount of tries to attempt when making API calls.
 const MAX_TRIES = 3
