@@ -4,11 +4,12 @@ package ipify
 
 import (
 	"errors"
-	"github.com/jpillora/backoff"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
+
+	"github.com/jpillora/backoff"
 )
 
 // GetIp queries the ipify service (http://www.ipify.org) to retrieve this
@@ -42,13 +43,14 @@ func GetIp() (string, error) {
 
 	req, err := http.NewRequest("GET", API_URI, nil)
 	if err != nil {
-		return "", errors.New("Received an invalid status code from ipify: 500. The service might be experiencing issues.")
+		return "", wrapError(err)
 	}
 
-	req.Header.Add("User-Agent", USER_AGENT)
+	req.Header.Set("User-Agent", USER_AGENT)
 
 	for tries := 0; tries < MAX_TRIES; tries++ {
-		resp, err := client.Do(req)
+		var resp *http.Response
+		resp, err = client.Do(req)
 		if err != nil {
 			d := b.Duration()
 			time.Sleep(d)
@@ -57,17 +59,28 @@ func GetIp() (string, error) {
 
 		defer resp.Body.Close()
 
-		ip, err := ioutil.ReadAll(resp.Body)
+		var ip []byte
+		ip, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return "", errors.New("Received an invalid status code from ipify: 500. The service might be experiencing issues.")
+			return "", wrapError(err)
 		}
 
-		if resp.StatusCode != 200 {
-			return "", errors.New("Received an invalid status code from ipify: " + strconv.Itoa(resp.StatusCode) + ". The service might be experiencing issues.")
+		if resp.StatusCode != http.StatusOK {
+			description :=
+				fmt.Sprintf("Received invalid status code %d from ipify: %s. The service might be experiencing issues.",
+					resp.StatusCode, resp.Status)
+			return "", errors.New(description)
 		}
 
 		return string(ip), nil
 	}
 
-	return "", errors.New("The request failed because it wasn't able to reach the ipify service. This is most likely due to a networking error of some sort.")
+	return "", wrapError(err)
+}
+
+func wrapError(inner error) error {
+	description :=
+		fmt.Sprintf("The request failed with error %s. This is most likely due to a networking error of some sort.",
+			inner.Error())
+	return errors.New(description)
 }
